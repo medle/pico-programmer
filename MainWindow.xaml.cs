@@ -27,14 +27,15 @@ namespace PicoProgrammer
             RecallOptions();
             comPortMonitor = new ComPortMonitor(AddToTerminalByInvoke, Log);
             RefreshComPort();
+            KeyDown += new KeyEventHandler(OnKeyDown);
         }
 
-        private DeviceChangeDetector detector;
+        private DeviceChangeMonitor deviceChangeMonitor;
         private ComPortMonitor comPortMonitor;
 
         protected override void OnSourceInitialized(EventArgs e)
         {
-            detector = new DeviceChangeDetector(this, OnDeviceChange);
+            deviceChangeMonitor = new DeviceChangeMonitor(this, OnDeviceChange);
             base.OnSourceInitialized(e);
             Log("Loaded");
         }
@@ -46,12 +47,22 @@ namespace PicoProgrammer
             base.OnClosed(e);
         }
 
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            char ch = KeyEventUtility.GetCharFromKey(e.Key);
+            if (e.Key == Key.Return) ch = '\n';
+            if (ch != 0) {
+                if (comPortMonitor.TrySendChar(ch))
+                    AddToTerminal(ch);
+            }
+        }
+
         private void OnDeviceChange(bool deviceArrived)
         {
             if (deviceArrived)
             {
-                Log($"Device arrived");
-                Programmer.SendProgram(FirmwareFilePath.Text, TargetDevicePath.Text, Log);
+                //Log($"Device arrived");
+                Programmer.TrySendProgram(FirmwareFilePath.Text, TargetDevicePath.Text, Log);
                 RefreshComPort();
             }
         }

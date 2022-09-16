@@ -10,7 +10,7 @@ namespace PicoProgrammer
 {
     public class Programmer
     {
-        public static void SendProgram(
+        public static void TrySendProgram(
             string firmwareFilePath, string targetDevicePath, Action<string> logger)
         {
             string extension = ".uf2";

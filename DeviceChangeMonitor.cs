@@ -12,7 +12,7 @@ namespace PicoProgrammer
     /// such as USB drive connecting or disconnecting.
     /// https://qa.sqlite.in/qa/?qa=946706/
     /// </summary>
-    public class DeviceChangeDetector : System.Windows.Forms.NativeWindow
+    public class DeviceChangeMonitor : System.Windows.Forms.NativeWindow
     {
         // https://docs.microsoft.com/en-us/windows/win32/devio/wm-devicechange
         private const int WM_DEVICECHANGE = 0x0219;
@@ -21,7 +21,7 @@ namespace PicoProgrammer
 
         private Action<bool> onDeviceChange;
 
-        public DeviceChangeDetector(Window window, Action<bool> onDeviceChange)
+        public DeviceChangeMonitor(Window window, Action<bool> onDeviceChange)
         {
             var helper = new System.Windows.Interop.WindowInteropHelper(window);
             this.AssignHandle(helper.Handle);

@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PicoProgrammer"
         mc:Ignorable="d"
-        Title="Raspberry Pi Pico Programmer" Height="400" Width="800">
+        Title="Raspberry Pi Pico Programmer" 
+        Icon="Gears.ico"
+        Height="400" 
+        Width="800">
     <DockPanel Margin="10">
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
@@ -29,13 +32,13 @@
             <DockPanel Grid.Row="1" Grid.Column="1">
                  <TextBox Name="TargetDevicePath"
                           FontWeight="Bold"
-                          Width="100"/>
+                          Width="50"/>
                 <TextBlock Text="COM port for monitoring: "
                            Margin="25,0,0,0"/>
                 <TextBox Name="ComPort"
                          FontWeight="Bold"
                          HorizontalAlignment="Left"
-                         Width="100"/>
+                         Width="50"/>
             </DockPanel>    
         </Grid>
         

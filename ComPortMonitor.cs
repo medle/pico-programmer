@@ -32,7 +32,7 @@ namespace PicoProgrammer
                 }
             }
             catch (Exception e) {
-                logger($"Refresh: {e.Message}");
+                logger($"SerialPort: {e.Message}");
             }
         }
 
@@ -51,6 +51,18 @@ namespace PicoProgrammer
                 if(serialPort.IsOpen) serialPort.Close();
                 serialPort.Dispose();
                 serialPort = null;
+            }
+        }
+
+        public bool TrySendChar(char ch)
+        {
+            if (serialPort == null || !serialPort.IsOpen) return false;
+            try {
+                serialPort.Write(ch.ToString());
+                return true;
+            }
+            catch (Exception) {
+                return false;
             }
         }
 
