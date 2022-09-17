@@ -30,20 +30,25 @@
                        VerticalAlignment="Center"
                        Text="Path to storage device to copy the .UF2 file to:"/>
             <DockPanel Grid.Row="1" Grid.Column="1">
-                 <TextBox Name="TargetDevicePath"
+                <TextBox Name="TargetDevicePath"
                           FontWeight="Bold"
                           Width="50"/>
-                <TextBlock Text="COM port for monitoring: "
-                           Margin="25,0,0,0"/>
-                <TextBox Name="ComPort"
+                <DockPanel HorizontalAlignment="Right">
+                    <TextBlock Text="COM port to monitor: "
+                               VerticalAlignment="Center"/>
+                    <TextBox Name="ComPort"
                          FontWeight="Bold"
-                         HorizontalAlignment="Left"
                          Width="50"/>
-            </DockPanel>    
+                    <Button Content=" Clear COM log "
+                        HorizontalAlignment="Left" 
+                        Margin="4,0,0,0" 
+                        Click="OnClearComLog_Click"/>
+                </DockPanel>
+            </DockPanel>
         </Grid>
-        
+
         <TextBlock DockPanel.Dock="Top" Height="10"/>
-        
+
         <ListBox DockPanel.Dock="Bottom" 
                  Name="LogListBox"
                  Height="150"/>

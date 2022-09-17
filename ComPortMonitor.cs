@@ -9,11 +9,11 @@ namespace PicoProgrammer
 {
     public class ComPortMonitor
     {
-        private Action<char> dataHandler;
+        private Action<string> dataHandler;
         private Action<string> logger;
         private SerialPort serialPort;
 
-        public ComPortMonitor(Action<char> dataHandler, Action<string> logger)
+        public ComPortMonitor(Action<string> dataHandler, Action<string> logger)
         {
             this.dataHandler = dataHandler ?? throw new NullReferenceException();
             this.logger = logger ?? throw new NullReferenceException();
@@ -69,11 +69,16 @@ namespace PicoProgrammer
         private void ReadFromPort()
         {
             if (serialPort == null) return;
+
+            // read bytes in as quickly as possible
+            var buf = new StringBuilder();
             while (serialPort.BytesToRead > 0)
             {
                 int ch = serialPort.ReadChar();
-                dataHandler((char)ch);
+                buf.Append((char)ch);
             }
+
+            dataHandler(buf.ToString());
         }
     }
 }

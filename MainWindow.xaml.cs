@@ -87,9 +87,9 @@ namespace PicoProgrammer
             foreach (char ch in s) AddToTerminal(ch);
         }
 
-        private void AddToTerminalByInvoke(char ch)
+        private void AddToTerminalByInvoke(string s)
         {
-            Action a = () => AddToTerminal(ch);
+            Action a = () => AddToTerminal(s);
             Dispatcher.BeginInvoke(a);
         }
 
@@ -109,6 +109,17 @@ namespace PicoProgrammer
                 last.Inlines.Add(new Run(ch.ToString()));
                 TerminalRichBox.ScrollToVerticalOffset(double.MaxValue);
             }
+
+            // don't let the textbox grow indefinitely, it hangs when becomes too large
+            if (TerminalRichBox.Document.Blocks.Count > 200) {
+                var first = TerminalRichBox.Document.Blocks.First();
+                TerminalRichBox.Document.Blocks.Remove(first);
+            }
+        }
+
+        private void OnClearComLog_Click(object sender, RoutedEventArgs e)
+        {
+            TerminalRichBox.Document.Blocks.Clear();
         }
 
         private void RecallOptions()
