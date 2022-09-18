@@ -27,7 +27,9 @@ namespace PicoProgrammer
             RecallOptions();
             comPortMonitor = new ComPortMonitor(AddToTerminalByInvoke, Log);
             RefreshComPort();
-            KeyDown += new KeyEventHandler(OnKeyDown);
+
+            // ordinary KeyDown doesn't give us SPACE down events
+            TerminalRichBox.PreviewKeyDown += new KeyEventHandler(OnKeyDown);
         }
 
         private DeviceChangeMonitor deviceChangeMonitor;
@@ -50,7 +52,13 @@ namespace PicoProgrammer
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             char ch = KeyEventUtility.GetCharFromKey(e.Key);
+
             if (e.Key == Key.Return) ch = '\n';
+            if (e.Key == Key.Space) ch = ' ';
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl) ch = '\0';
+            if (e.Key == Key.LeftShift || e.Key == Key.RightShift) ch = '\0';
+            if (e.Key == Key.LeftAlt || e.Key == Key.RightAlt) ch = '\0';
+
             if (ch != 0) {
                 if (comPortMonitor.TrySendChar(ch))
                     AddToTerminal(ch.ToString());
