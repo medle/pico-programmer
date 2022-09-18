@@ -57,6 +57,7 @@
 
         <RichTextBox Name="TerminalRichBox" 
                      IsReadOnly="True"
+                     IsReadOnlyCaretVisible="True"
                      VerticalScrollBarVisibility="Visible"
                      FontFamily="Lucida Console"
                      Background="Silver" 

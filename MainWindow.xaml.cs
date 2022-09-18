@@ -53,7 +53,7 @@ namespace PicoProgrammer
             if (e.Key == Key.Return) ch = '\n';
             if (ch != 0) {
                 if (comPortMonitor.TrySendChar(ch))
-                    AddToTerminal(ch);
+                    AddToTerminal(ch.ToString());
             }
         }
 
@@ -82,38 +82,57 @@ namespace PicoProgrammer
             LogListBox.ScrollIntoView(LogListBox.SelectedItem);
         }
 
-        private void AddToTerminal(string s)
-        {
-            foreach (char ch in s) AddToTerminal(ch);
-        }
-
         private void AddToTerminalByInvoke(string s)
         {
             Action a = () => AddToTerminal(s);
             Dispatcher.BeginInvoke(a);
         }
 
-        private void AddToTerminal(char ch)
+        private void AddToTerminal(string s)
         {
-            if (ch == '\r') return;
-
-            if (TerminalRichBox.Document.Blocks.Count == 0 || ch == '\n') {
-                var p = new Paragraph();
-                TerminalRichBox.Document.Blocks.Add(p);
-                if (ch == '\n') return;
+            if (s == null) return;
+            var buf = new StringBuilder();
+            foreach (char ch in s) {
+                if (ch == '\r') continue;
+                if (ch == '\n') {
+                    if (buf.Length > 0) AddToTerminalText(buf.ToString());
+                    buf.Clear();
+                    AddToTerminalLineBreak();
+                    continue;
+                }
+                buf.Append(ch);
             }
 
-            var last = TerminalRichBox.Document.Blocks.Last() as Paragraph;
-            if (last != null) {
-                last.Margin = new Thickness(0);
-                last.Inlines.Add(new Run(ch.ToString()));
-                TerminalRichBox.ScrollToVerticalOffset(double.MaxValue);
+            if(buf.Length > 0) AddToTerminalText(buf.ToString());
+        }
+
+        private void AddToTerminalLineBreak()
+        {
+            var p = new Paragraph();
+            p.Margin = new Thickness(0);
+            TerminalRichBox.Document.Blocks.Add(p);
+            TerminalRichBox.CaretPosition = p.ContentEnd;
+            p.BringIntoView();
+        }
+
+        private void AddToTerminalText(string text)
+        {
+            if (TerminalRichBox.Document.Blocks.Count == 0) {
+                AddToTerminalLineBreak();
+            }
+
+            var lastBlock = TerminalRichBox.Document.Blocks.Last() as Paragraph;
+            if (lastBlock != null) {
+                lastBlock.Margin = new Thickness(0);
+                lastBlock.Inlines.Add(new Run(text));
+                TerminalRichBox.CaretPosition = lastBlock.ContentEnd;
+                lastBlock.BringIntoView();
             }
 
             // don't let the textbox grow indefinitely, it hangs when becomes too large
             if (TerminalRichBox.Document.Blocks.Count > 200) {
-                var first = TerminalRichBox.Document.Blocks.First();
-                TerminalRichBox.Document.Blocks.Remove(first);
+                var firstBlock = TerminalRichBox.Document.Blocks.First();
+                TerminalRichBox.Document.Blocks.Remove(firstBlock);
             }
         }
 
